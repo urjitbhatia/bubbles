@@ -1,0 +1,30 @@
+# Cloudflare Workers configuration for Rust
+name = "supaflare-api"
+main = "build/worker/shim.mjs"
+compatibility_date = "2025-11-02"
+
+# Build configuration for Rust/WASM
+[build]
+command = "cargo install -q worker-build && worker-build --release"
+
+# Local development server
+[dev]
+port = 9999
+
+# Environment variables (set via wrangler secret for production)
+[vars]
+FRONTEND_URL = "http://localhost:5174"
+
+# R2 bucket bindings
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "supaflare-storage"
+
+# Scheduled tasks (cron triggers)
+[triggers]
+crons = []
+
+# Production routes (configure for your domain)
+# [[routes]]
+# pattern = "api.example.com/*"
+# zone_name = "example.com"

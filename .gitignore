@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+*.egg-info/
+.eggs/
+
+# Build outputs
+dist/
+build/
+*.whl
+
+# Environment
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Cloudflare
+.wrangler/
+.mf/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Supabase
+api/supabase/.branches/
+api/supabase/.temp/

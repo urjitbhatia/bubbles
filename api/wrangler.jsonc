@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.json",
+  "name": "supaflare-api",
+  "main": "src/worker.py",
+  "compatibility_date": "2025-11-02",
+  "compatibility_flags": ["python_workers"],
+
+  // Local development server
+  "dev": {
+    "port": 9999
+  },
+
+  // R2 bucket bindings
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "supaflare-storage"
+    }
+  ],
+
+  // Scheduled tasks (cron triggers)
+  "triggers": {
+    "crons": []
+  },
+
+  // Production routes (configure for your domain)
+  "routes": []
+}
