@@ -2,7 +2,7 @@
 
 ## Development Server
 
-- **Port**: 9999
+- **Port**: 9990
 - **Start command**: `make dev`
 - **Build command**: `make build`
 - **Deploy command**: `make deploy`
@@ -15,7 +15,7 @@ Located in `api-rust/.dev.vars`:
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 SUPABASE_ANON_KEY=your_anon_key
-FRONTEND_URL=http://localhost:5174
+FRONTEND_URL=http://localhost:6174
 ```
 
 ## Key Files

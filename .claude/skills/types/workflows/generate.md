@@ -4,7 +4,7 @@ Generate TypeScript types from backend OpenAPI schema.
 
 ## Instructions
 
-1. Ensure backend is running at http://localhost:9999
+1. Ensure backend is running at http://localhost:9990
 2. Run type generation command
 3. Verify types were generated correctly
 4. Commit the updated types
@@ -24,7 +24,7 @@ cd api-rust && make dev
 ### 2. Verify OpenAPI Endpoint
 
 ```bash
-curl http://localhost:9999/openapi.json | head -20
+curl http://localhost:9990/openapi.json | head -20
 ```
 
 Should return JSON schema.
@@ -55,7 +55,7 @@ Fix any type errors in components using the API.
 
 ### Backend Not Running
 ```
-Error: connect ECONNREFUSED 127.0.0.1:9999
+Error: connect ECONNREFUSED 127.0.0.1:9990
 ```
 → Start the backend first
 

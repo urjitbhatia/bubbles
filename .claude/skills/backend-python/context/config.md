@@ -2,10 +2,10 @@
 
 ## Development Server
 
-- **Port**: 9999
+- **Port**: 9990
 - **Start command**: `make dev` (Workers runtime) or `make local` (direct FastAPI)
-- **OpenAPI docs**: http://localhost:9999/docs
-- **OpenAPI JSON**: http://localhost:9999/openapi.json
+- **OpenAPI docs**: http://localhost:9990/docs
+- **OpenAPI JSON**: http://localhost:9990/openapi.json
 
 ## Environment Variables
 
@@ -15,7 +15,7 @@ Located in `api/.dev.vars` (copy from `.dev.vars.example`):
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 SUPABASE_ANON_KEY=your_anon_key
-FRONTEND_URL=http://localhost:5174
+FRONTEND_URL=http://localhost:6174
 ```
 
 ## Key Files
@@ -33,7 +33,7 @@ FRONTEND_URL=http://localhost:5174
 ## Makefile Commands
 
 ```bash
-make dev        # Start with Workers runtime (port 9999)
+make dev        # Start with Workers runtime (port 9990)
 make local      # Start direct FastAPI (port 8000)
 make test       # Run tests
 make lint       # Run linter

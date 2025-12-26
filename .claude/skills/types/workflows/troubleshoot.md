@@ -36,10 +36,10 @@ pnpm run generate-types
 **Fix**:
 ```bash
 # Check backend is running
-curl http://localhost:9999/api/v1/health
+curl http://localhost:9990/api/v1/health
 
 # Check OpenAPI endpoint
-curl http://localhost:9999/openapi.json | head -50
+curl http://localhost:9990/openapi.json | head -50
 
 # If error in OpenAPI, check backend logs
 ```
@@ -85,7 +85,7 @@ If missing, regenerate.
 
 2. **Check OpenAPI output**:
    ```bash
-   curl http://localhost:9999/openapi.json | jq '.components.schemas.Item'
+   curl http://localhost:9990/openapi.json | jq '.components.schemas.Item'
    ```
 
 3. **Check generated types**:

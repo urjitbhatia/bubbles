@@ -21,8 +21,8 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
-              <Link to="/" className="text-xl font-semibold text-gray-900">
-                Supaflare
+              <Link to="/" className="text-xl font-semibold text-blue-600">
+                Bubbles
               </Link>
               <div className="hidden sm:flex space-x-4">
                 <Link to="/" className="text-gray-600 hover:text-gray-900">

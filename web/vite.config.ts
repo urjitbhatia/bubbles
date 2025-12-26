@@ -7,5 +7,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), cloudflare()],
   server: {
     port: 6174,
+    watch: {
+      usePolling: true,
+    },
   },
 })

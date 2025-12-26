@@ -2,8 +2,8 @@
 
 ## Development Server
 
-- **Port**: 5174
-- **Start command**: `pnpm run dev:with-binding` (with backend) or `pnpm run dev` (standalone)
+- **Port**: 6174
+- **Start command**: `pnpm run dev`
 - **Build command**: `pnpm run build`
 - **Deploy command**: `pnpm run deploy`
 
@@ -42,4 +42,4 @@ After backend API changes:
 pnpm run generate-types
 ```
 
-Generates `web/src/types/api.ts` from `http://localhost:9999/openapi.json`.
+Generates `web/src/types/api.ts` from `http://localhost:9990/openapi.json`.

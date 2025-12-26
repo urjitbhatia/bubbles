@@ -1,6 +1,6 @@
 ---
 name: backend-rust
-description: Rust/WASM backend in api-rust/. High-performance alternative using workers-rs, utoipa for OpenAPI, and Supabase REST API. Port 9999 for local dev. 10-100x faster than Python.
+description: Rust/WASM backend in api-rust/. High-performance alternative using workers-rs, utoipa for OpenAPI, and Supabase REST API. Port 9990 for local dev. 10-100x faster than Python.
 ---
 
 # Skill: Backend Rust

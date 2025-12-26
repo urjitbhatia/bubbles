@@ -16,12 +16,12 @@ pnpm run generate-types
 
 This runs:
 ```bash
-openapi-typescript http://localhost:9999/openapi.json -o src/types/api.ts
+openapi-typescript http://localhost:9990/openapi.json -o src/types/api.ts
 ```
 
 ## Requirements
 
-- Backend must be running at http://localhost:9999
+- Backend must be running at http://localhost:9990
 - `/openapi.json` endpoint must be accessible
 
 ## Generated File

@@ -17,8 +17,8 @@ Location: `api/supabase/config.toml`
 ```toml
 [auth]
 enabled = true
-site_url = "http://localhost:5174"
-additional_redirect_urls = ["http://127.0.0.1:5174"]
+site_url = "http://localhost:6174"
+additional_redirect_urls = ["http://127.0.0.1:6174"]
 
 [auth.email]
 enable_signup = true

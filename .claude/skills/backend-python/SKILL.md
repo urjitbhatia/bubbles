@@ -1,6 +1,6 @@
 ---
 name: backend-python
-description: FastAPI Python backend in api/. Covers routes, models, Supabase integration, authentication, R2 storage, and Cloudflare Workers deployment. Port 9999 for local dev. OpenAPI docs at /docs.
+description: FastAPI Python backend in api/. Covers routes, models, Supabase integration, authentication, R2 storage, and Cloudflare Workers deployment. Port 9990 for local dev. OpenAPI docs at /docs.
 ---
 
 # Skill: Backend Python

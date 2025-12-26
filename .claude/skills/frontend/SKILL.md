@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: React + Vite + TailwindCSS frontend development in web/. Covers components, pages, routing, API client, Supabase auth, and Cloudflare Pages deployment. Port 5174 for local dev.
+description: React + Vite + TailwindCSS frontend development in web/. Covers components, pages, routing, API client, Supabase auth, and Cloudflare Pages deployment. Port 6174 for local dev.
 ---
 
 # Skill: Frontend
