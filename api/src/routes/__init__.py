@@ -6,8 +6,8 @@ All route modules are aggregated here and included in the main router.
 
 from fastapi import APIRouter
 
-from .items import router as items_router
-from .user import router as user_router
+from routes.items import router as items_router
+from routes.user import router as user_router
 
 
 router = APIRouter()

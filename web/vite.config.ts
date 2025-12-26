@@ -1,16 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { cloudflare } from '@cloudflare/vite-plugin'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss(), cloudflare()],
   server: {
-    port: 5174,
-    // Proxy API calls to backend during non-binding dev
-    proxy: {
-      '/api': {
-        target: 'http://localhost:9999',
-        changeOrigin: true,
-      },
-    },
+    port: 6174,
   },
 })

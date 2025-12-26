@@ -12,17 +12,17 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import router
+from routes import router
 
 
 def get_allowed_origins() -> list[str]:
     """Get allowed CORS origins based on environment."""
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5174")
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:6174")
 
     return [
         frontend_url,
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
+        "http://localhost:6174",
+        "http://127.0.0.1:6174",
         # Add production URLs here
     ]
 

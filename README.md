@@ -29,7 +29,7 @@ A minimal, production-ready monorepo template for building full-stack applicatio
 │  ┌─────────────────────┐    ┌─────────────────────────────┐ │
 │  │   Pages (Frontend)  │───▶│   Workers (Backend API)     │ │
 │  │   React + Vite      │    │   Python or Rust            │ │
-│  │   Port 5174         │    │   Port 9999                 │ │
+│  │   Port 6174         │    │   Port 9990                 │ │
 │  └─────────────────────┘    └─────────────────────────────┘ │
 │           │                            │                    │
 │           │ Service Binding            │ R2 Binding         │
@@ -107,25 +107,25 @@ cp api-rust/.dev.vars.example api-rust/.dev.vars # Rust
 
 **With Python backend:**
 ```bash
-# Terminal 1: Backend (port 9999)
+# Terminal 1: Backend (port 9990)
 cd api && make dev
 
-# Terminal 2: Frontend (port 5174)
+# Terminal 2: Frontend (port 6174)
 cd web && pnpm run dev:with-binding
 ```
 
 **With Rust backend:**
 ```bash
-# Terminal 1: Backend (port 9999)
+# Terminal 1: Backend (port 9990)
 cd api-rust && make dev
 
-# Terminal 2: Frontend (port 5174)
+# Terminal 2: Frontend (port 6174)
 cd web && pnpm run dev:with-binding
 ```
 
 ### 5. Open App
 
-Visit http://localhost:5174
+Visit http://localhost:6174
 
 ## Project Structure
 
@@ -186,7 +186,7 @@ After changing backend API endpoints or models:
 cd web && pnpm run generate-types
 ```
 
-This reads the OpenAPI schema from http://localhost:9999/openapi.json and generates TypeScript types in `src/types/api.ts`.
+This reads the OpenAPI schema from http://localhost:9990/openapi.json and generates TypeScript types in `src/types/api.ts`.
 
 Both Python (FastAPI) and Rust (utoipa) backends expose the same `/openapi.json` endpoint.
 
@@ -223,7 +223,7 @@ pnpm run deploy
 
 The frontend proxies `/api/*` requests to the backend using Cloudflare Service Bindings:
 
-- **Local**: Frontend at 5174 proxies to backend at 9999
+- **Local**: Frontend at 6174 proxies to backend at 9990
 - **Production**: Direct Worker-to-Worker calls (no HTTP overhead)
 
 This is configured in:

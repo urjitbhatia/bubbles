@@ -7,7 +7,8 @@
 
   // Local development server
   "dev": {
-    "port": 9999
+    "port": 9990,
+    "persist_to": "../.wrangler/state"
   },
 
   // R2 bucket bindings

@@ -7,9 +7,19 @@ available to the FastAPI app.
 """
 
 import os
-from workers import WorkerEntrypoint, asgi
+from workers import WorkerEntrypoint
 
-from .httpserver import webapp
+from httpserver import webapp
+
+
+# Environment variables to extract from Workers env
+ENV_VAR_NAMES = [
+    "SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_ANON_KEY",
+    "FRONTEND_URL",
+    # Add other env vars as needed
+]
 
 
 def _extract_env_vars(env):
@@ -20,15 +30,7 @@ def _extract_env_vars(env):
     This function extracts them and sets them as OS environment variables
     so they can be accessed by the FastAPI app using os.getenv().
     """
-    env_vars = [
-        "SUPABASE_URL",
-        "SUPABASE_SERVICE_ROLE_KEY",
-        "SUPABASE_ANON_KEY",
-        "FRONTEND_URL",
-        # Add other env vars as needed
-    ]
-
-    for var in env_vars:
+    for var in ENV_VAR_NAMES:
         value = getattr(env, var, None)
         if value is not None:
             os.environ[var] = str(value)
@@ -39,6 +41,8 @@ class Default(WorkerEntrypoint):
 
     async def fetch(self, request):
         """Handle incoming HTTP requests."""
+        import asgi
+
         # Extract env vars from Workers runtime
         _extract_env_vars(self.env)
 

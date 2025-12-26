@@ -9,11 +9,12 @@ command = "cargo install -q worker-build && worker-build --release"
 
 # Local development server
 [dev]
-port = 9999
+port = 9990
+persist_to = "../.wrangler/state"
 
 # Environment variables (set via wrangler secret for production)
 [vars]
-FRONTEND_URL = "http://localhost:5174"
+FRONTEND_URL = "http://localhost:6174"
 
 # R2 bucket bindings
 [[r2_buckets]]

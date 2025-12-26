@@ -4,8 +4,8 @@ User API endpoints
 
 from fastapi import APIRouter
 
-from ..dependencies import CurrentUser
-from ..models.user import UserProfile
+from dependencies import CurrentUser
+from models.user import UserProfile
 
 
 router = APIRouter()

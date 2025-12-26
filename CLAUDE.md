@@ -2,14 +2,16 @@
 
 | Component | Port | Package Mgr | Start Command |
 |-----------|------|-------------|---------------|
-| Frontend | 5174 | pnpm | `pnpm run dev:with-binding` |
-| Backend | 9999 | uv | `make dev` |
+| Frontend | 6174 | pnpm | `pnpm run dev` |
+| Backend (Python) | 9990 | uv | `make dev` |
+
+**Dev workflow**: Start backend first, then frontend.
 
 ## Critical Rule: Type Sync
 
 **After ANY backend API change**, regenerate frontend types:
 ```bash
-cd /path/to/project/web && pnpm run generate-types
+cd web && pnpm run generate-types
 ```
 
 **NEVER define custom API types** in `apiClient.ts`. Always re-export from auto-generated types:
@@ -28,6 +30,13 @@ export type MyResponse = components['schemas']['MyResponse'];
 
 ## Service Bindings
 
-Frontend proxies `/api/*` to backend via Cloudflare Service Bindings:
-- `web/wrangler.toml` declares the binding
-- `web/functions/_middleware.ts` handles the proxy
+Frontend uses `@cloudflare/vite-plugin` which provides bindings in both dev and production:
+- Dev: Plugin uses `getPlatformProxy()` to provide bindings
+- Production: Normal Cloudflare Pages/Workers runtime
+
+Configuration in `web/wrangler.toml`:
+```toml
+[[services]]
+binding = "API"
+service = "supaflare-api"
+```

@@ -10,7 +10,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from supabase import Client
 
-from .supabase_client import get_user_client
+from supabase_client import get_user_client
 
 
 security = HTTPBearer()

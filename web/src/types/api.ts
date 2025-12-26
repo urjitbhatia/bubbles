@@ -2,7 +2,7 @@
  * Auto-generated API types from OpenAPI schema
  *
  * Run `pnpm run generate-types` to regenerate after backend changes
- * Requires backend to be running at http://localhost:9999
+ * Requires backend to be running at http://localhost:9990
  */
 
 // Placeholder types - regenerate with: pnpm run generate-types

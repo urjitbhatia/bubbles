@@ -1,6 +1,6 @@
 .PHONY: dev build deploy test lint clean
 
-# Development with Cloudflare Workers runtime (port 9999)
+# Development with Cloudflare Workers runtime (port 9990)
 dev:
 	wrangler dev
 

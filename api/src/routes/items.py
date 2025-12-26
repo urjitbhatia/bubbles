@@ -9,8 +9,8 @@ from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Query
 
-from ..dependencies import CurrentUser
-from ..models.item import Item, ItemCreate, ItemList
+from dependencies import CurrentUser
+from models.item import Item, ItemCreate, ItemList
 
 
 router = APIRouter()

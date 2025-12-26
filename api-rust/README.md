@@ -26,7 +26,7 @@ Choose Rust when you need:
 ## Development
 
 ```bash
-# Start local dev server (port 9999)
+# Start local dev server (port 9990)
 make dev
 
 # Build release binary

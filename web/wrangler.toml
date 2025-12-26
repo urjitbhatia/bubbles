@@ -2,15 +2,11 @@
 name = "supaflare-web"
 compatibility_date = "2025-11-02"
 
-# Build output directory (Vite default)
-[build]
-command = "pnpm run build"
-
 # Service binding to backend Worker
 [[services]]
 binding = "API"
 service = "supaflare-api"
 
-# For local development with wrangler pages dev
+# Local development
 [dev]
-port = 5174
+port = 6174
