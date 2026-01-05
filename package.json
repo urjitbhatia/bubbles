@@ -1,0 +1,19 @@
+{
+  "name": "bubbles",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A lending library app for sharing items among trusted groups",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^20.10.0",
+    "playwright": "^1.57.0"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}
