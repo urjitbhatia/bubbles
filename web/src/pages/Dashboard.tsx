@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
-import { apiClient } from '../lib/api-client'
-import type { components } from '../types/api'
-
-type Item = components['schemas']['Item']
+import { itemsApi, type ItemWithShares } from '../lib/api'
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth()
-  const [items, setItems] = useState<Item[]>([])
+  const [items, setItems] = useState<ItemWithShares[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -17,11 +14,8 @@ export default function Dashboard() {
 
     async function fetchItems() {
       try {
-        const { data, error } = await apiClient.GET('/api/v1/items', {
-          params: { query: { page: 1, limit: 10 } },
-        })
-        if (error) throw new Error('Failed to fetch items')
-        setItems(data?.items ?? [])
+        const result = await itemsApi.list(1, 10)
+        setItems(result.items)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
