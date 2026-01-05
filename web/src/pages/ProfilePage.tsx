@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { Edit, LogOut, User as UserIcon, Calendar } from 'lucide-react'
 import { useAuth } from '../lib/auth'
 import { Button } from '../components/ui/Button'
@@ -17,10 +17,7 @@ export default function ProfilePage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login')
-      return
-    }
+    // Auth is handled by ProtectedLayout
 
     async function fetchProfile() {
       try {
@@ -56,7 +53,7 @@ export default function ProfilePage() {
   const handleSignOut = async () => {
     try {
       await signOut()
-      navigate('/login')
+      navigate({ to: '/login' })
     } catch (error) {
       console.error('Error signing out:', error)
     }

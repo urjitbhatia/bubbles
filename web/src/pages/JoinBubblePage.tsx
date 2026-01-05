@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth'
 import { Loader2, CheckCircle } from 'lucide-react'
 import { bubblesApi } from '../lib/api'
@@ -14,7 +14,7 @@ interface BubblePreview {
 }
 
 export default function JoinBubblePage() {
-  const { code } = useParams<{ code: string }>()
+  const { code } = useParams({ from: '/join/$code' })
   const navigate = useNavigate()
   const { user, loading: authLoading } = useAuth()
 
@@ -25,7 +25,7 @@ export default function JoinBubblePage() {
 
   const handleJoinBubble = async () => {
     if (!user) {
-      navigate(`/login?redirect=/join/${code}`)
+      navigate({ to: '/login', search: { redirect: `/join/${code}` } })
       return
     }
 
@@ -53,7 +53,7 @@ export default function JoinBubblePage() {
 
       // Redirect to bubble after a short delay
       setTimeout(() => {
-        navigate(`/bubbles/${result.bubble.id}`)
+        navigate({ to: '/bubbles/$id', params: { id: result.bubble.id } })
       }, 1500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to join bubble')
@@ -174,7 +174,8 @@ export default function JoinBubblePage() {
                       Sign in to join this bubble
                     </p>
                     <Link
-                      to={`/login?redirect=/join/${code}`}
+                      to="/login"
+                      search={{ redirect: `/join/${code}` }}
                       className="block w-full px-6 py-4 bg-ocean-600 hover:bg-ocean-700 text-white font-semibold text-lg rounded-lg text-center shadow-sm hover:shadow-md transition-all duration-200"
                     >
                       Sign In to Join

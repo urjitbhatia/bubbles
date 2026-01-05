@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Navigate } from 'react-router-dom'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth'
 import {
   ArrowLeft,
@@ -43,7 +43,7 @@ function transformBubble(bubble: BubbleWithMembers): BubbleUI {
 }
 
 export default function BubbleDetailPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams({ from: '/_protected/bubbles/$id' })
   const navigate = useNavigate()
   const { user, loading: authLoading } = useAuth()
 
@@ -79,14 +79,14 @@ export default function BubbleDetailPage() {
     if (!confirm(`Are you sure you want to leave ${bubble.name}?`)) return
 
     await bubblesApi.removeMember(id, user.id)
-    navigate('/bubbles')
+    navigate({ to: '/bubbles' })
   }
 
   const handleDeleteBubble = async () => {
     if (!id) return
 
     await bubblesApi.delete(id)
-    navigate('/bubbles')
+    navigate({ to: '/bubbles' })
   }
 
   const handlePromoteToAdmin = async (userId: string) => {
@@ -119,10 +119,6 @@ export default function BubbleDetailPage() {
     )
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
-
   if (loading) {
     return (
       <div className="flex justify-center py-12">
@@ -137,7 +133,7 @@ export default function BubbleDetailPage() {
         <h2 className="text-2xl font-semibold text-neutral-700 mb-2">Bubble Not Found</h2>
         <p className="text-neutral-600 mb-6">The bubble you're looking for doesn't exist.</p>
         <button
-          onClick={() => navigate('/bubbles')}
+          onClick={() => navigate({ to: '/bubbles' })}
           className="px-6 py-3 bg-ocean-600 hover:bg-ocean-700 text-white font-medium rounded-lg"
         >
           Back to Bubbles
@@ -151,7 +147,7 @@ export default function BubbleDetailPage() {
       {/* Header with back button */}
       <div className="mb-6">
         <button
-          onClick={() => navigate('/bubbles')}
+          onClick={() => navigate({ to: '/bubbles' })}
           className="inline-flex items-center gap-2 text-ocean-600 hover:text-ocean-700 font-medium mb-4"
         >
           <ArrowLeft className="w-4 h-4" />

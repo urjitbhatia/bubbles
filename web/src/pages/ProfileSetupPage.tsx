@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { UserCircle } from 'lucide-react'
 import { ProfileForm } from '../components/profile/ProfileForm'
 import { userApi } from '../lib/api'
@@ -13,7 +13,7 @@ export default function ProfileSetupPage() {
     })
 
     // Navigate to inventory after successful setup
-    navigate('/inventory')
+    navigate({ to: '/inventory' })
   }
 
   return (

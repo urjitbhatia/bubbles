@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { itemsApi, type ItemWithShares } from '../lib/api'
 
@@ -34,18 +33,14 @@ export default function Dashboard() {
     )
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Your Profile</h2>
-        <p className="text-gray-600">Email: {user.email}</p>
-        <p className="text-gray-600">User ID: {user.id}</p>
+        <p className="text-gray-600">Email: {user?.email}</p>
+        <p className="text-gray-600">User ID: {user?.id}</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border p-6">

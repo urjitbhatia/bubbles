@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { GoogleAuthButton } from '../components/auth/GoogleAuthButton'
 import { MagicLinkForm } from '../components/auth/MagicLinkForm'
 
@@ -8,7 +8,7 @@ export default function LoginPage() {
   const handleAuthSuccess = () => {
     // Navigate to profile setup for new users, or dashboard for existing users
     // TODO: Check if user profile exists, if not go to setup
-    navigate('/profile/setup')
+    navigate({ to: '/profile/setup' })
   }
 
   const handleAuthError = (error: Error) => {

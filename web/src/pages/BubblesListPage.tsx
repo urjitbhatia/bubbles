@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { Plus, Loader2 } from 'lucide-react'
 import BubbleCard from '../components/bubbles/BubbleCard'
@@ -86,10 +85,6 @@ export default function BubblesListPage() {
         <Loader2 className="w-8 h-8 animate-spin text-ocean-600" />
       </div>
     )
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />
   }
 
   return (

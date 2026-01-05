@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import ItemAvailabilityBadge from './ItemAvailabilityBadge'
 import BubbleSharePills from './BubbleSharePills'
 
@@ -21,7 +21,8 @@ export default function ItemCard({
 }: ItemCardProps) {
   return (
     <Link
-      to={`/items/${id}`}
+      to="/items/$id"
+      params={{ id }}
       className="bg-white rounded-lg shadow-sm hover:shadow-md border border-neutral-200 overflow-hidden transition-shadow duration-200 block"
     >
       {/* Placeholder for image - using gradient for now */}

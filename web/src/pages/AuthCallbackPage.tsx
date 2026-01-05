@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { supabase } from '../lib/supabase'
 import { Spinner } from '../components/ui/Spinner'
 
@@ -11,15 +11,15 @@ import { Spinner } from '../components/ui/Spinner'
  */
 export default function AuthCallbackPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearch({ strict: false }) as Record<string, string | undefined>
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
         // Check for error in URL params
-        const errorParam = searchParams.get('error')
-        const errorDescription = searchParams.get('error_description')
+        const errorParam = searchParams.error
+        const errorDescription = searchParams.error_description
         if (errorParam) {
           setError(errorDescription || errorParam)
           return
@@ -66,14 +66,14 @@ export default function AuthCallbackPage() {
 
           // If no profile or no display name, go to profile setup
           if (!profile || !profile.display_name) {
-            navigate('/profile/setup', { replace: true })
+            navigate({ to: '/profile/setup', replace: true })
           } else {
             // Existing user with profile - go to dashboard
-            navigate('/dashboard', { replace: true })
+            navigate({ to: '/dashboard', replace: true })
           }
         } else {
           // No session found - redirect to login
-          navigate('/login', { replace: true })
+          navigate({ to: '/login', replace: true })
         }
       } catch (err) {
         console.error('Auth callback error:', err)
@@ -108,7 +108,7 @@ export default function AuthCallbackPage() {
           </h2>
           <p className="text-neutral-600 mb-6">{error}</p>
           <button
-            onClick={() => navigate('/login', { replace: true })}
+            onClick={() => navigate({ to: '/login', replace: true })}
             className="bg-ocean-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-ocean-700 transition-colors"
           >
             Try Again

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import ItemCard from '../components/items/ItemCard'
 import AddItemModal from '../components/items/AddItemModal'
@@ -90,10 +89,6 @@ export default function InventoryPage() {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-600" />
       </div>
     )
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />
   }
 
   return (

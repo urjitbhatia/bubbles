@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 
 interface BubbleCardProps {
   id: string
@@ -25,7 +25,7 @@ export default function BubbleCard({
   const extraCount = Math.max(0, memberCount - 3)
 
   return (
-    <Link to={`/bubbles/${id}`}>
+    <Link to="/bubbles/$id" params={{ id }}>
       <div className="relative bg-gradient-to-br from-ocean-50 via-white to-sage-50 rounded-xl p-6 shadow-sm hover:shadow-md border-2 border-ocean-200 hover:border-ocean-300 transition-all duration-200 cursor-pointer">
         {/* Decorative background bubbles */}
         <div className="absolute -top-8 -right-8 w-32 h-32 bg-ocean-100 rounded-full opacity-20"></div>

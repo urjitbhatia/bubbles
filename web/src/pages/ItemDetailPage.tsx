@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Navigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth'
 import ItemAvailabilityBadge from '../components/items/ItemAvailabilityBadge'
 import BubbleSharePills from '../components/items/BubbleSharePills'
@@ -53,7 +53,7 @@ function transformLoan(loan: LoanWithDetails): LoanHistoryUI {
 }
 
 export default function ItemDetailPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams({ from: '/_protected/items/$id' })
   const navigate = useNavigate()
   const { user, loading: authLoading } = useAuth()
   const [item, setItem] = useState<ItemUI | null>(null)
@@ -115,7 +115,7 @@ export default function ItemDetailPage() {
     if (!id) return
 
     await itemsApi.delete(id)
-    navigate('/inventory')
+    navigate({ to: '/inventory' })
   }
 
   const handleShareToBubbles = async (bubbleIds: string[]) => {
@@ -133,9 +133,7 @@ export default function ItemDetailPage() {
     )
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
+  // Auth is handled by ProtectedLayout, so no need to check here
 
   if (!item) {
     return (

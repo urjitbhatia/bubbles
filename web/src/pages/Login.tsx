@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth'
 
 export default function Login() {
@@ -23,7 +23,7 @@ export default function Login() {
         setError('Check your email to confirm your account')
       } else {
         await signIn(email, password)
-        navigate('/dashboard')
+        navigate({ to: '/dashboard' })
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
