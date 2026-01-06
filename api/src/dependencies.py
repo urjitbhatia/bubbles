@@ -10,7 +10,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from supabase import Client
 
-from supabase_client import get_user_client
+from supabase_client import get_supabase_client
 
 
 security = HTTPBearer()
@@ -69,19 +69,24 @@ async def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]
 ) -> Tuple[str, Client]:
     """
-    Validate the user's token and return user ID + RLS client.
+    Validate the user's token and return user ID + service client.
 
     This dependency:
     1. Extracts the Bearer token from the Authorization header
     2. Validates the JWT token
-    3. Creates a Supabase client with the user's token for RLS
+    3. Returns a service role client (RLS bypassed since auth is done in Python)
 
     Returns:
         Tuple of (user_id, supabase_client)
+
+    Note: We use service role client because:
+    - JWT validation ensures the user is authenticated
+    - Authorization checks are done in route handlers
+    - RLS with auth.uid() doesn't work reliably with PostgREST auth header
     """
     token = credentials.credentials
     user_id = get_user_from_token(token)
-    client = get_user_client(token)
+    client = get_supabase_client()
     return user_id, client
 
 
