@@ -1,7 +1,57 @@
+/* Primary font: Inter for body text - clean and readable */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Display font: Plus Jakarta Sans - friendlier, rounder, more personality */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 @import 'tailwindcss';
+@import './animations.css';
 
 @theme {
+  /* Font Families */
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  /* Warm Background Colors - less sterile than pure white/gray */
+  --color-warm-50: #fefdfb;   /* Barely warm white - main page bg */
+  --color-warm-100: #faf8f5;  /* Subtle cream - card backgrounds */
+  --color-warm-200: #f5f2ed;  /* Light warm gray - section bg */
+
+  /* TipTap-inspired Vibrant Palette */
+  /* Violet - left side of gradient */
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
+  --color-violet-900: #4c1d95;
+
+  /* Fuchsia/Pink - middle of gradient */
+  --color-fuchsia-50: #fdf4ff;
+  --color-fuchsia-100: #fae8ff;
+  --color-fuchsia-200: #f5d0fe;
+  --color-fuchsia-300: #f0abfc;
+  --color-fuchsia-400: #e879f9;
+  --color-fuchsia-500: #d946ef;
+  --color-fuchsia-600: #c026d3;
+  --color-fuchsia-700: #a21caf;
+  --color-fuchsia-800: #86198f;
+  --color-fuchsia-900: #701a75;
+
+  /* Mint/Teal - right side of gradient */
+  --color-mint-50: #f0fdfa;
+  --color-mint-100: #ccfbf1;
+  --color-mint-200: #99f6e4;
+  --color-mint-300: #5eead4;
+  --color-mint-400: #2dd4bf;
+  --color-mint-500: #14b8a6;
+  --color-mint-600: #0d9488;
+  --color-mint-700: #0f766e;
+  --color-mint-800: #115e59;
+  --color-mint-900: #134e4a;
+
   /* Color Palette */
   --color-ocean-50: #f0f9ff;
   --color-ocean-100: #e0f2fe;

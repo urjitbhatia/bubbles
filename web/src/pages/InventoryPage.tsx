@@ -3,6 +3,7 @@ import { useAuth } from '../lib/auth'
 import ItemCard from '../components/items/ItemCard'
 import AddItemModal from '../components/items/AddItemModal'
 import { itemsApi, bubblesApi, type ItemWithShares, type Bubble } from '../lib/api'
+import { Spinner } from '../components/ui/Spinner'
 
 // Transformed item type for UI components (camelCase)
 interface ItemUI {
@@ -86,30 +87,43 @@ export default function InventoryPage() {
   if (authLoading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-600" />
+        <Spinner size="lg" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-container-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-neutral-700 mb-2">
-          My Inventory
-        </h1>
-        <p className="text-base text-neutral-600">
-          Manage your items and share them with your bubbles
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-bold text-neutral-900 mb-2">
+            My Inventory
+          </h1>
+          <p className="text-lg text-neutral-600">
+            Manage your items and share them with your bubbles
+          </p>
+        </div>
+
+        {/* Add Item Button - Desktop */}
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="hidden sm:flex px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add Item
+        </button>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-4 mb-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
             <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -126,7 +140,7 @@ export default function InventoryPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search items..."
-              className="w-full pl-10 pr-4 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent transition-colors duration-200"
+              className="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
             />
           </div>
 
@@ -134,10 +148,10 @@ export default function InventoryPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-colors duration-200 ${
+              className={`p-3 rounded-xl transition-all duration-200 ${
                 viewMode === 'grid'
-                  ? 'bg-ocean-100 text-ocean-700'
-                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                  ? 'bg-gradient-to-br from-violet-100 to-fuchsia-100 text-violet-700 border border-violet-200'
+                  : 'bg-neutral-50 text-neutral-600 border border-neutral-200 hover:bg-neutral-100'
               }`}
               aria-label="Grid view"
             >
@@ -152,10 +166,10 @@ export default function InventoryPage() {
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors duration-200 ${
+              className={`p-3 rounded-xl transition-all duration-200 ${
                 viewMode === 'list'
-                  ? 'bg-ocean-100 text-ocean-700'
-                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                  ? 'bg-gradient-to-br from-violet-100 to-fuchsia-100 text-violet-700 border border-violet-200'
+                  : 'bg-neutral-50 text-neutral-600 border border-neutral-200 hover:bg-neutral-100'
               }`}
               aria-label="List view"
             >
@@ -170,20 +184,15 @@ export default function InventoryPage() {
             </button>
           </div>
 
-          {/* Add Item Button */}
+          {/* Add Item Button - Mobile */}
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-6 py-2 bg-ocean-600 hover:bg-ocean-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 inline-flex items-center gap-2"
+            className="sm:hidden px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-xl shadow-md flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <span className="hidden sm:inline">Add Item</span>
+            Add Item
           </button>
         </div>
       </div>
@@ -191,35 +200,16 @@ export default function InventoryPage() {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center py-16">
-          <svg
-            className="animate-spin h-8 w-8 text-ocean-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
+          <Spinner size="lg" />
         </div>
       )}
 
       {/* Empty State */}
       {!loading && items.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="w-32 h-32 bg-gradient-to-br from-ocean-100 to-sage-100 rounded-full flex items-center justify-center mb-6">
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+          <div className="w-32 h-32 bg-gradient-to-br from-violet-100 to-fuchsia-100 rounded-full flex items-center justify-center mb-6">
             <svg
-              className="w-16 h-16 text-ocean-300"
+              className="w-16 h-16 text-violet-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -232,16 +222,16 @@ export default function InventoryPage() {
               />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-neutral-700 mb-2">
+          <h3 className="font-display text-2xl font-bold text-neutral-900 mb-2">
             No Items Yet
           </h3>
-          <p className="text-neutral-500 mb-6 max-w-sm">
+          <p className="text-neutral-500 mb-8 max-w-sm">
             Start building your lending library by adding items you're willing to
             share.
           </p>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-6 py-3 bg-ocean-600 hover:bg-ocean-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2"
+            className="px-8 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Add Your First Item
           </button>
@@ -250,7 +240,7 @@ export default function InventoryPage() {
 
       {/* No Search Results */}
       {!loading && items.length > 0 && filteredItems.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
           <div className="w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mb-4">
             <svg
               className="w-12 h-12 text-neutral-400"
@@ -266,7 +256,7 @@ export default function InventoryPage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-neutral-700 mb-1">
+          <h3 className="text-lg font-bold text-neutral-900 mb-1">
             No results for "{searchQuery}"
           </h3>
           <p className="text-sm text-neutral-500 mb-4">
@@ -274,7 +264,7 @@ export default function InventoryPage() {
           </p>
           <button
             onClick={() => setSearchQuery('')}
-            className="text-ocean-600 hover:text-ocean-700 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 rounded"
+            className="text-violet-600 hover:text-violet-700 font-medium text-sm"
           >
             Clear search
           </button>

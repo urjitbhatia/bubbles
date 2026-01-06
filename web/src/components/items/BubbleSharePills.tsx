@@ -17,7 +17,7 @@ export default function BubbleSharePills({ bubbles, onAdd }: BubbleSharePillsPro
       {bubbles.map((bubble) => (
         <span
           key={bubble.id}
-          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-ocean-100 text-ocean-800"
+          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-fuchsia-100 to-violet-100 text-fuchsia-700 border border-fuchsia-200"
         >
           {bubble.name}
         </span>
@@ -25,7 +25,7 @@ export default function BubbleSharePills({ bubbles, onAdd }: BubbleSharePillsPro
       {onAdd && (
         <button
           onClick={onAdd}
-          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-colors duration-200"
+          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 border border-neutral-200 transition-colors duration-200"
         >
           + Add Bubble
         </button>

@@ -26,16 +26,16 @@ export default function BubbleCard({
 
   return (
     <Link to="/bubbles/$id" params={{ id }}>
-      <div className="relative bg-gradient-to-br from-ocean-50 via-white to-sage-50 rounded-xl p-6 shadow-sm hover:shadow-md border-2 border-ocean-200 hover:border-ocean-300 transition-all duration-200 cursor-pointer">
-        {/* Decorative background bubbles */}
-        <div className="absolute -top-8 -right-8 w-32 h-32 bg-ocean-100 rounded-full opacity-20"></div>
-        <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-sage-100 rounded-full opacity-20"></div>
+      <div className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg border border-neutral-200 hover:border-fuchsia-200 transition-all duration-300 cursor-pointer overflow-hidden">
+        {/* Decorative gradient orbs */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-fuchsia-200 to-violet-200 rounded-full opacity-0 group-hover:opacity-50 blur-2xl transition-opacity duration-300" />
+        <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-gradient-to-br from-mint-200 to-fuchsia-200 rounded-full opacity-0 group-hover:opacity-40 blur-2xl transition-opacity duration-300" />
 
         {/* Content */}
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h3 className="text-xl font-semibold text-neutral-700 mb-1">
+              <h3 className="text-xl font-bold text-neutral-900 mb-1 group-hover:text-fuchsia-700 transition-colors">
                 {name}
               </h3>
               <p className="text-sm text-neutral-500">
@@ -44,9 +44,9 @@ export default function BubbleCard({
               </p>
             </div>
             {/* Bubble icon */}
-            <div className="w-12 h-12 bg-ocean-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-fuchsia-100 to-mint-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
               <svg
-                className="w-6 h-6 text-ocean-600"
+                className="w-6 h-6 text-fuchsia-600"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +83,7 @@ export default function BubbleCard({
               {displayMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="w-8 h-8 rounded-full border-2 border-white bg-ocean-100 flex items-center justify-center text-xs font-medium text-ocean-700"
+                  className="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-fuchsia-100 to-violet-100 flex items-center justify-center text-xs font-semibold text-fuchsia-700"
                   title={member.name}
                 >
                   {member.avatar ? (
@@ -98,7 +98,7 @@ export default function BubbleCard({
                 </div>
               ))}
               {extraCount > 0 && (
-                <div className="w-8 h-8 rounded-full border-2 border-white bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-600">
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-neutral-100 flex items-center justify-center text-xs font-semibold text-neutral-600">
                   +{extraCount}
                 </div>
               )}
