@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth'
+import { ArrowLeft, Pencil, Trash2, Share2, Loader2, Package } from 'lucide-react'
 import ItemAvailabilityBadge from '../components/items/ItemAvailabilityBadge'
 import BubbleSharePills from '../components/items/BubbleSharePills'
 import EditItemForm from '../components/items/EditItemForm'
@@ -128,7 +129,7 @@ export default function ItemDetailPage() {
   if (authLoading || loading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
       </div>
     )
   }
@@ -137,8 +138,11 @@ export default function ItemDetailPage() {
 
   if (!item) {
     return (
-      <div className="max-w-container-md mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <h2 className="text-2xl font-semibold text-neutral-700 mb-2">
+      <div className="max-w-4xl mx-auto py-12 text-center">
+        <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-fuchsia-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Package className="w-10 h-10 text-violet-400" />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-neutral-900 mb-2">
           Item Not Found
         </h2>
         <p className="text-neutral-600 mb-6">
@@ -146,7 +150,7 @@ export default function ItemDetailPage() {
         </p>
         <Link
           to="/inventory"
-          className="inline-block px-6 py-3 bg-ocean-600 hover:bg-ocean-700 text-white font-medium rounded-lg transition-colors duration-200"
+          className="inline-block px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200"
         >
           Back to Inventory
         </Link>
@@ -157,124 +161,124 @@ export default function ItemDetailPage() {
   const activeLoans = loanHistory.filter((loan) => loan.status === 'active').length
 
   return (
-    <div className="max-w-container-lg mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Back Button */}
-      <Link
-        to="/inventory"
-        className="inline-flex items-center gap-2 text-ocean-600 hover:text-ocean-700 font-medium mb-6 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 rounded"
-      >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back to Inventory
-      </Link>
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Header with back button */}
+      <div>
+        <button
+          onClick={() => navigate({ to: '/inventory' })}
+          className="inline-flex items-center gap-2 text-violet-600 hover:text-violet-700 font-medium mb-4 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Inventory
+        </button>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Item Header */}
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-            {!isEditing ? (
-              <>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h1 className="font-display text-3xl font-bold text-neutral-700 mb-2">
-                      {item.name}
-                    </h1>
-                    <div className="flex items-center gap-3">
-                      <ItemAvailabilityBadge
-                        available={item.availableQuantity}
-                        total={item.quantity}
-                      />
-                      <span className="text-sm text-neutral-500">
-                        Quantity: {item.quantity}
-                      </span>
+          {/* Item Header Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden">
+            {/* Gradient header - violet theme for items */}
+            <div className="relative h-24 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-violet-600">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+            </div>
+
+            <div className="px-6 pb-6 -mt-6 relative">
+              {!isEditing ? (
+                <>
+                  <div className="flex items-start gap-4">
+                    {/* Item icon */}
+                    <div className="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 border-4 border-white">
+                      <Package className="w-8 h-8 text-violet-500" />
+                    </div>
+
+                    <div className="flex-1 pt-6">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h1 className="font-display text-2xl font-bold text-neutral-900 mb-2">
+                            {item.name}
+                          </h1>
+                          <div className="flex items-center gap-3">
+                            <ItemAvailabilityBadge
+                              available={item.availableQuantity}
+                              total={item.quantity}
+                            />
+                            <span className="text-sm text-neutral-500">
+                              Quantity: {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setIsEditing(true)}
+                            className="p-2 bg-violet-50 hover:bg-violet-100 text-violet-600 hover:text-violet-700 rounded-xl transition-colors duration-200"
+                            aria-label="Edit item"
+                          >
+                            <Pencil className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => setIsDeleteModalOpen(true)}
+                            className="p-2 bg-error-50 hover:bg-error-100 text-error-600 hover:text-error-700 rounded-xl transition-colors duration-200"
+                            aria-label="Delete item"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="p-2 bg-transparent hover:bg-neutral-100 text-neutral-600 hover:text-neutral-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2"
-                      aria-label="Edit item"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => setIsDeleteModalOpen(true)}
-                      className="p-2 bg-transparent hover:bg-error-50 text-error-600 hover:text-error-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2"
-                      aria-label="Delete item"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
+
+                  {item.description && (
+                    <p className="text-base text-neutral-600 mt-4 ml-20">
+                      {item.description}
+                    </p>
+                  )}
+
+                  <div className="text-sm text-neutral-500 mt-4 ml-20">
+                    Added {new Date(item.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
                   </div>
+                </>
+              ) : (
+                <div className="pt-8">
+                  <EditItemForm
+                    item={item}
+                    activeLoans={activeLoans}
+                    onSave={handleSaveEdit}
+                    onCancel={() => setIsEditing(false)}
+                  />
                 </div>
-
-                {item.description && (
-                  <p className="text-base text-neutral-600 mb-4">
-                    {item.description}
-                  </p>
-                )}
-
-                <div className="text-sm text-neutral-500">
-                  Added {new Date(item.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </div>
-              </>
-            ) : (
-              <EditItemForm
-                item={item}
-                activeLoans={activeLoans}
-                onSave={handleSaveEdit}
-                onCancel={() => setIsEditing(false)}
-              />
-            )}
+              )}
+            </div>
           </div>
 
           {/* Tabs */}
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200">
-            <div className="border-b border-neutral-200">
-              <div className="flex">
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden">
+            <div className="border-b border-neutral-200 px-6">
+              <div className="flex gap-6">
                 <button
                   onClick={() => setActiveTab('details')}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                  className={`py-4 px-1 border-b-2 font-medium transition-colors ${
                     activeTab === 'details'
-                      ? 'border-ocean-600 text-ocean-700'
-                      : 'border-transparent text-neutral-600 hover:text-neutral-700'
+                      ? 'border-violet-600 text-violet-600'
+                      : 'border-transparent text-neutral-500 hover:text-neutral-700'
                   }`}
                 >
                   Details
                 </button>
                 <button
                   onClick={() => setActiveTab('history')}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                  className={`py-4 px-1 border-b-2 font-medium transition-colors ${
                     activeTab === 'history'
-                      ? 'border-ocean-600 text-ocean-700'
-                      : 'border-transparent text-neutral-600 hover:text-neutral-700'
+                      ? 'border-violet-600 text-violet-600'
+                      : 'border-transparent text-neutral-500 hover:text-neutral-700'
                   }`}
                 >
-                  History
+                  History ({loanHistory.length})
                 </button>
               </div>
             </div>
@@ -310,20 +314,24 @@ export default function ItemDetailPage() {
               ) : (
                 <div className="space-y-4">
                   {loanHistory.length === 0 ? (
-                    <div className="text-center py-8">
-                      <p className="text-neutral-500">
-                        No lending history yet
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Package className="w-8 h-8 text-neutral-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-neutral-900 mb-1">No Lending History</h3>
+                      <p className="text-sm text-neutral-500">
+                        Loans for this item will appear here
                       </p>
                     </div>
                   ) : (
                     loanHistory.map((loan) => (
                       <div
                         key={loan.id}
-                        className="bg-neutral-50 rounded-lg p-4 border border-neutral-200"
+                        className="bg-gradient-to-br from-neutral-50 to-white rounded-xl p-4 border border-neutral-200 hover:border-violet-200 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h4 className="font-semibold text-neutral-700 mb-1">
+                            <h4 className="font-semibold text-neutral-900 mb-1">
                               {loan.borrowerName}
                             </h4>
                             <p className="text-sm text-neutral-600">
@@ -352,10 +360,10 @@ export default function ItemDetailPage() {
                             )}
                           </div>
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
                               loan.status === 'active'
-                                ? 'bg-warning-100 text-warning-800'
-                                : 'bg-success-100 text-success-800'
+                                ? 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700'
+                                : 'bg-gradient-to-r from-emerald-100 to-mint-100 text-emerald-700'
                             }`}
                           >
                             {loan.status === 'active' ? 'Active' : 'Returned'}
@@ -372,51 +380,30 @@ export default function ItemDetailPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 sticky top-8">
-            <h3 className="text-lg font-semibold text-neutral-700 mb-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sticky top-8">
+            <h3 className="text-lg font-bold text-neutral-900 mb-4">
               Quick Actions
             </h3>
             <div className="space-y-3">
               <button
                 onClick={() => setIsShareModalOpen(true)}
-                className="w-full px-4 py-3 bg-ocean-50 hover:bg-ocean-100 text-ocean-700 font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 text-left flex items-center gap-3"
+                className="w-full px-4 py-3 bg-gradient-to-r from-violet-50 to-fuchsia-50 hover:from-violet-100 hover:to-fuchsia-100 text-violet-700 font-medium rounded-xl transition-colors duration-200 text-left flex items-center gap-3 border border-violet-100 hover:border-violet-200"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                  />
-                </svg>
+                <Share2 className="w-5 h-5" />
                 Manage Sharing
               </button>
               <button
                 onClick={() => setIsEditing(true)}
-                className="w-full px-4 py-3 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 text-left flex items-center gap-3"
+                className="w-full px-4 py-3 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 font-medium rounded-xl transition-colors duration-200 text-left flex items-center gap-3 border border-neutral-200 hover:border-neutral-300"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
+                <Pencil className="w-5 h-5" />
                 Edit Item
               </button>
               <button
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="w-full px-4 py-3 bg-error-50 hover:bg-error-100 text-error-700 font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2 text-left flex items-center gap-3"
+                className="w-full px-4 py-3 bg-error-50 hover:bg-error-100 text-error-700 font-medium rounded-xl transition-colors duration-200 text-left flex items-center gap-3 border border-error-200 hover:border-error-300"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
+                <Trash2 className="w-5 h-5" />
                 Delete Item
               </button>
             </div>
