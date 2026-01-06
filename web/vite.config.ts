@@ -15,6 +15,9 @@ export default defineConfig({
     ...(isDev ? [] : [cloudflare()]),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ['favicon.svg', 'icons/*.svg', 'icons/*.png'],
       manifest: {
         name: 'Bubbles',

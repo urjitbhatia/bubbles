@@ -71,17 +71,20 @@ test.describe('Bubbles API Endpoints', () => {
 
 test.describe('Bubbles UI (Unauthenticated)', () => {
   test('bubbles list page redirects to login', async ({ page }) => {
-    await page.goto(`${FRONTEND_URL}/bubbles`)
+    // Don't wait for full load - the redirect happens before API calls
+    await page.goto(`${FRONTEND_URL}/bubbles`, { waitUntil: 'commit' })
 
     // Should redirect to login
-    await expect(page).toHaveURL(/\/login/)
+    await page.waitForURL(/\/login/, { timeout: 10000 })
   })
 
   test('bubble detail page redirects to login', async ({ page }) => {
-    await page.goto(`${FRONTEND_URL}/bubbles/test-bubble-id`)
+    await page.goto(`${FRONTEND_URL}/bubbles/test-bubble-id`, {
+      waitUntil: 'commit',
+    })
 
     // Should redirect to login
-    await expect(page).toHaveURL(/\/login/)
+    await page.waitForURL(/\/login/, { timeout: 10000 })
   })
 })
 
