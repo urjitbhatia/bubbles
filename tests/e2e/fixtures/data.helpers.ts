@@ -11,6 +11,11 @@ import { AuthenticatedRequest, API_BASE_URL } from './auth.fixture'
 // TYPES
 // ============================================================================
 
+export interface BubbleRef {
+  id: string
+  name: string
+}
+
 export interface TestItem {
   id: string
   owner_id: string
@@ -18,6 +23,8 @@ export interface TestItem {
   description: string | null
   quantity: number
   created_at: string
+  shared_bubbles?: BubbleRef[]
+  available_quantity?: number
 }
 
 export interface TestBubble {
@@ -28,6 +35,8 @@ export interface TestBubble {
   created_by: string
   created_at: string
   members?: TestBubbleMember[]
+  member_count?: number
+  is_admin?: boolean
 }
 
 export interface TestBubbleMember {

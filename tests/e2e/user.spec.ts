@@ -139,6 +139,51 @@ authTest.describe('Profile Setup', () => {
   })
 })
 
+authTest.describe('Username Operations', () => {
+  authTest('can update username with valid value', async ({ authRequest }) => {
+    const originalProfile = await getTestUserProfile(authRequest)
+
+    // Update with a unique username
+    const newUsername = `testuser_${Date.now()}`
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: newUsername },
+    })
+
+    authExpect(response.status()).toBe(200)
+    const updated = await response.json()
+    authExpect(updated.username).toBe(newUsername)
+
+    // Restore original username
+    await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: originalProfile.username },
+    })
+  })
+
+  authTest('cannot update to taken username', async ({ authRequest }) => {
+    // Try to take Bob's username (Alice is the current user)
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: TEST_USERS.bob.username },
+    })
+
+    authExpect(response.status()).toBe(400)
+    const body = await response.json()
+    authExpect(body.detail).toContain('Username already taken')
+  })
+
+  authTest('own username shows as available', async ({ authRequest, currentUser }) => {
+    // Alice checking Alice's username should return available=true
+    const response = await authRequest.get(
+      `${API_BASE_URL}/api/v1/user/check-username/${currentUser.username}`
+    )
+
+    authExpect(response.status()).toBe(200)
+    const body = await response.json()
+    authExpect(body).toHaveProperty('username', currentUser.username)
+    // User's own username should show as available (they can keep it)
+    authExpect(body).toHaveProperty('available', true)
+  })
+})
+
 authTest.describe('Profile Validation', () => {
   authTest('empty update is rejected', async ({ authRequest }) => {
     const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
@@ -156,5 +201,82 @@ authTest.describe('Profile Validation', () => {
 
     const body = await response.json()
     authExpect(body).toHaveProperty('detail')
+  })
+
+  authTest('rejects username that is too short', async ({ authRequest }) => {
+    // Username must be at least 3 characters (min_length=3 in model)
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: 'ab' },
+    })
+
+    // FastAPI returns 422 for validation errors
+    authExpect(response.status()).toBe(422)
+  })
+
+  authTest('rejects username that is too long', async ({ authRequest }) => {
+    // Username max is 30 characters (max_length=30 in model)
+    const longUsername = 'a'.repeat(31)
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: longUsername },
+    })
+
+    authExpect(response.status()).toBe(422)
+  })
+
+  authTest('rejects username with invalid characters', async ({ authRequest }) => {
+    // Username must match ^[a-zA-Z0-9_]+$ pattern
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { username: 'invalid-username!' },
+    })
+
+    authExpect(response.status()).toBe(422)
+  })
+
+  authTest('rejects display_name that is too long', async ({ authRequest }) => {
+    // display_name max is 100 characters (max_length=100 in model)
+    const longName = 'A'.repeat(101)
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: { display_name: longName },
+    })
+
+    authExpect(response.status()).toBe(422)
+  })
+})
+
+authTest.describe('Profile Field Completeness', () => {
+  authTest('profile includes avatar_url field', async ({ authRequest }) => {
+    const profile = await getTestUserProfile(authRequest)
+
+    // avatar_url is optional but should be present in the response
+    authExpect(profile).toHaveProperty('avatar_url')
+  })
+
+  authTest('can update both display_name and username together', async ({
+    authRequest,
+  }) => {
+    const originalProfile = await getTestUserProfile(authRequest)
+
+    const newDisplayName = `Both Test ${Date.now()}`
+    const newUsername = `both_${Date.now()}`
+
+    const response = await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: {
+        display_name: newDisplayName,
+        username: newUsername,
+      },
+    })
+
+    authExpect(response.status()).toBe(200)
+    const updated = await response.json()
+    authExpect(updated.display_name).toBe(newDisplayName)
+    authExpect(updated.username).toBe(newUsername)
+
+    // Restore original values
+    await authRequest.patch(`${API_BASE_URL}/api/v1/user/me`, {
+      data: {
+        display_name: originalProfile.display_name,
+        username: originalProfile.username,
+      },
+    })
   })
 })
