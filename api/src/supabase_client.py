@@ -4,12 +4,16 @@ Supabase client configuration
 Provides two types of clients:
 1. Service Role Client - Bypasses RLS, for system operations
 2. User Client - Respects RLS, for user-scoped operations
+
+IMPORTANT: User clients create a fresh instance per request to avoid
+race conditions with concurrent requests.
 """
 
 import os
 from functools import lru_cache
+from typing import Optional
 
-from supabase import create_client, Client
+from supabase import create_client, Client, ClientOptions
 
 
 @lru_cache()
@@ -29,6 +33,10 @@ def _get_config():
     return url, service_role_key, anon_key
 
 
+# Cache for service role client
+_service_client: Optional[Client] = None
+
+
 def get_supabase_client() -> Client:
     """
     Get a Supabase client with service role privileges.
@@ -38,8 +46,28 @@ def get_supabase_client() -> Client:
 
     WARNING: Do not use for user-facing operations.
     """
-    url, service_role_key, _ = _get_config()
-    return create_client(url, service_role_key)
+    global _service_client
+    if _service_client is None:
+        url, service_role_key, _ = _get_config()
+        _service_client = create_client(url, service_role_key)
+    return _service_client
+
+
+# Cache for auth client (anon key, used for token verification)
+_auth_client: Optional[Client] = None
+
+
+def get_auth_client() -> Client:
+    """
+    Get a Supabase client for auth operations.
+
+    Uses anon key and is used for token verification via auth.get_user().
+    """
+    global _auth_client
+    if _auth_client is None:
+        url, _, anon_key = _get_config()
+        _auth_client = create_client(url, anon_key)
+    return _auth_client
 
 
 def get_user_client(user_token: str) -> Client:
@@ -48,6 +76,11 @@ def get_user_client(user_token: str) -> Client:
 
     This client uses the user's JWT token to enforce Row Level Security,
     ensuring users can only access data they're authorized to see.
+    The user's JWT is passed to Supabase so auth.uid() returns
+    the correct user ID in RLS policies.
+
+    Creates a fresh client instance to avoid race conditions with
+    concurrent requests (each request gets its own client with its own token).
 
     Args:
         user_token: The user's JWT access token from Supabase Auth
@@ -56,6 +89,12 @@ def get_user_client(user_token: str) -> Client:
         A Supabase client configured with the user's token
     """
     url, _, anon_key = _get_config()
-    client = create_client(url, anon_key)
-    client.postgrest.auth(user_token)
+    # Create client with explicit Authorization header for RLS
+    # This ensures auth.uid() returns the correct user ID in RLS policies
+    options = ClientOptions(
+        headers={
+            "Authorization": f"Bearer {user_token}",
+        }
+    )
+    client = create_client(url, anon_key, options)
     return client

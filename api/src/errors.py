@@ -4,12 +4,14 @@ Error handling utilities for Supabase operations.
 Provides consistent error handling across all API routes.
 """
 
+import logging
 from functools import wraps
 from typing import Callable, TypeVar
 
 from fastapi import HTTPException
 from postgrest.exceptions import APIError
 
+logger = logging.getLogger(__name__)
 T = TypeVar('T')
 
 
@@ -34,6 +36,7 @@ def handle_db_error(e: APIError, context: str = "database operation") -> HTTPExc
     """
     error_message = str(e)
     code = getattr(e, 'code', None)
+    logger.error(f"Database error during {context}: {error_message} (code: {code})")
 
     # Parse the error message for common patterns
     if 'PGRST116' in error_message or 'No rows found' in error_message.lower():

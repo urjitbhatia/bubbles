@@ -159,7 +159,63 @@ CREATE INDEX notifications_created_at_idx ON notifications(created_at DESC);
 CREATE INDEX notifications_unread_idx ON notifications(user_id, read) WHERE read = false;
 
 -- ============================================================================
+-- HELPER FUNCTIONS (SECURITY DEFINER - bypass RLS for policy checks)
+-- These prevent infinite recursion in RLS policies
+-- ============================================================================
+
+-- Check if a user is a member of a specific bubble
+CREATE OR REPLACE FUNCTION is_bubble_member(p_bubble_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM bubble_members
+        WHERE bubble_id = p_bubble_id
+        AND user_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Check if a user is an admin of a specific bubble
+CREATE OR REPLACE FUNCTION is_bubble_admin(p_bubble_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM bubble_members
+        WHERE bubble_id = p_bubble_id
+        AND user_id = p_user_id
+        AND role = 'admin'
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Check if a user owns an item
+CREATE OR REPLACE FUNCTION is_item_owner(p_item_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM items
+        WHERE id = p_item_id
+        AND owner_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Check if an item is shared to any bubble the user belongs to
+CREATE OR REPLACE FUNCTION can_access_shared_item(p_item_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM item_shares
+        JOIN bubble_members ON bubble_members.bubble_id = item_shares.bubble_id
+        WHERE item_shares.item_id = p_item_id
+        AND bubble_members.user_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ============================================================================
 -- ROW LEVEL SECURITY POLICIES
+-- Using SECURITY DEFINER functions to prevent infinite recursion
 -- ============================================================================
 
 -- Enable RLS on all tables
@@ -178,13 +234,7 @@ CREATE POLICY "Members can read their bubbles"
     ON bubbles
     FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = bubbles.id
-            AND bubble_members.user_id = auth.uid()
-        )
-    );
+    USING (is_bubble_member(id, auth.uid()));
 
 -- Any authenticated user can view bubble by invite code (for joining)
 CREATE POLICY "Anyone can view bubble by invite code"
@@ -205,28 +255,14 @@ CREATE POLICY "Admins can update their bubbles"
     ON bubbles
     FOR UPDATE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = bubbles.id
-            AND bubble_members.user_id = auth.uid()
-            AND bubble_members.role = 'admin'
-        )
-    );
+    USING (is_bubble_admin(id, auth.uid()));
 
 -- Admins can delete their bubbles
 CREATE POLICY "Admins can delete their bubbles"
     ON bubbles
     FOR DELETE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = bubbles.id
-            AND bubble_members.user_id = auth.uid()
-            AND bubble_members.role = 'admin'
-        )
-    );
+    USING (is_bubble_admin(id, auth.uid()));
 
 -- -----------------------------------------------------------------------------
 -- BUBBLE_MEMBERS RLS
@@ -236,13 +272,7 @@ CREATE POLICY "Members can see members in their bubbles"
     ON bubble_members
     FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members AS my_membership
-            WHERE my_membership.bubble_id = bubble_members.bubble_id
-            AND my_membership.user_id = auth.uid()
-        )
-    );
+    USING (is_bubble_member(bubble_id, auth.uid()));
 
 -- Users can join bubbles (insert their own membership)
 CREATE POLICY "Users can join bubbles"
@@ -263,33 +293,19 @@ CREATE POLICY "Admins can update roles in their bubbles"
     ON bubble_members
     FOR UPDATE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members AS admin_check
-            WHERE admin_check.bubble_id = bubble_members.bubble_id
-            AND admin_check.user_id = auth.uid()
-            AND admin_check.role = 'admin'
-        )
-    );
+    USING (is_bubble_admin(bubble_id, auth.uid()));
 
 -- Admins can remove members from their bubbles
 CREATE POLICY "Admins can remove members from bubbles"
     ON bubble_members
     FOR DELETE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members AS admin_check
-            WHERE admin_check.bubble_id = bubble_members.bubble_id
-            AND admin_check.user_id = auth.uid()
-            AND admin_check.role = 'admin'
-        )
-    );
+    USING (is_bubble_admin(bubble_id, auth.uid()));
 
 -- -----------------------------------------------------------------------------
 -- ITEMS RLS
 -- -----------------------------------------------------------------------------
--- Owners can CRUD their items
+-- Owners can read own items
 CREATE POLICY "Owners can read own items"
     ON items
     FOR SELECT
@@ -301,21 +317,16 @@ CREATE POLICY "Bubble members can read shared items"
     ON items
     FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM item_shares
-            JOIN bubble_members ON bubble_members.bubble_id = item_shares.bubble_id
-            WHERE item_shares.item_id = items.id
-            AND bubble_members.user_id = auth.uid()
-        )
-    );
+    USING (can_access_shared_item(id, auth.uid()));
 
+-- Owners can create items
 CREATE POLICY "Owners can create items"
     ON items
     FOR INSERT
     TO authenticated
     WITH CHECK (auth.uid() = owner_id);
 
+-- Owners can update items
 CREATE POLICY "Owners can update items"
     ON items
     FOR UPDATE
@@ -323,6 +334,7 @@ CREATE POLICY "Owners can update items"
     USING (auth.uid() = owner_id)
     WITH CHECK (auth.uid() = owner_id);
 
+-- Owners can delete items
 CREATE POLICY "Owners can delete items"
     ON items
     FOR DELETE
@@ -332,61 +344,36 @@ CREATE POLICY "Owners can delete items"
 -- -----------------------------------------------------------------------------
 -- ITEM_SHARES RLS
 -- -----------------------------------------------------------------------------
--- Item owners can manage shares
+-- Item owners can read shares
 CREATE POLICY "Item owners can read shares"
     ON item_shares
     FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM items
-            WHERE items.id = item_shares.item_id
-            AND items.owner_id = auth.uid()
-        )
-    );
+    USING (is_item_owner(item_id, auth.uid()));
 
 -- Bubble members can read shares in their bubbles
 CREATE POLICY "Bubble members can read shares in their bubbles"
     ON item_shares
     FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = item_shares.bubble_id
-            AND bubble_members.user_id = auth.uid()
-        )
-    );
+    USING (is_bubble_member(bubble_id, auth.uid()));
 
+-- Item owners can create shares (must also be bubble member)
 CREATE POLICY "Item owners can create shares"
     ON item_shares
     FOR INSERT
     TO authenticated
     WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM items
-            WHERE items.id = item_shares.item_id
-            AND items.owner_id = auth.uid()
-        )
-        AND
-        EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = item_shares.bubble_id
-            AND bubble_members.user_id = auth.uid()
-        )
+        is_item_owner(item_id, auth.uid())
+        AND is_bubble_member(bubble_id, auth.uid())
     );
 
+-- Item owners can delete shares
 CREATE POLICY "Item owners can delete shares"
     ON item_shares
     FOR DELETE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM items
-            WHERE items.id = item_shares.item_id
-            AND items.owner_id = auth.uid()
-        )
-    );
+    USING (is_item_owner(item_id, auth.uid()));
 
 -- -----------------------------------------------------------------------------
 -- LOANS RLS
@@ -398,11 +385,7 @@ CREATE POLICY "Involved parties can read loans"
     TO authenticated
     USING (
         auth.uid() = borrower_id
-        OR EXISTS (
-            SELECT 1 FROM items
-            WHERE items.id = loans.item_id
-            AND items.owner_id = auth.uid()
-        )
+        OR is_item_owner(item_id, auth.uid())
     );
 
 -- Bubble members can create loan requests
@@ -412,16 +395,7 @@ CREATE POLICY "Bubble members can create loan requests"
     TO authenticated
     WITH CHECK (
         auth.uid() = borrower_id
-        AND EXISTS (
-            SELECT 1 FROM bubble_members
-            WHERE bubble_members.bubble_id = loans.bubble_id
-            AND bubble_members.user_id = auth.uid()
-        )
-        AND EXISTS (
-            SELECT 1 FROM item_shares
-            WHERE item_shares.item_id = loans.item_id
-            AND item_shares.bubble_id = loans.bubble_id
-        )
+        AND is_bubble_member(bubble_id, auth.uid())
     );
 
 -- Item owners and borrowers can update loan status
@@ -431,11 +405,7 @@ CREATE POLICY "Involved parties can update loans"
     TO authenticated
     USING (
         auth.uid() = borrower_id
-        OR EXISTS (
-            SELECT 1 FROM items
-            WHERE items.id = loans.item_id
-            AND items.owner_id = auth.uid()
-        )
+        OR is_item_owner(item_id, auth.uid())
     );
 
 -- -----------------------------------------------------------------------------
@@ -468,7 +438,7 @@ CREATE POLICY "System can create notifications"
     WITH CHECK (auth.uid() = user_id);
 
 -- ============================================================================
--- HELPER FUNCTIONS
+-- ADDITIONAL HELPER FUNCTIONS
 -- ============================================================================
 
 -- Function to automatically add creator as admin when bubble is created

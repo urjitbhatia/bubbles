@@ -4,6 +4,7 @@ Items API endpoints
 CRUD operations for user inventory items.
 """
 
+import logging
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Query
@@ -11,6 +12,8 @@ from postgrest.exceptions import APIError
 
 from dependencies import CurrentUser
 from errors import handle_db_error
+
+logger = logging.getLogger(__name__)
 from models.item import (
     Item,
     ItemCreate,
@@ -55,9 +58,11 @@ async def list_items(
     """
     user_id, client = current_user
     offset = (page - 1) * limit
+    logger.info(f"list_items called for user_id: {user_id}")
 
     try:
         # Query items with pagination
+        logger.info("Executing items query...")
         response = (
             client.table("items")
             .select("*", count="exact")
@@ -66,6 +71,7 @@ async def list_items(
             .range(offset, offset + limit - 1)
             .execute()
         )
+        logger.info(f"Query succeeded, got {len(response.data)} items")
 
         items_with_shares = []
         for item in response.data:
