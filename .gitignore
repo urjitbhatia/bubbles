@@ -13,6 +13,7 @@ __pycache__/
 # Build outputs
 dist/
 build/
+dev-dist/
 *.whl
 
 # Environment
@@ -41,7 +42,11 @@ pnpm-debug.log*
 .coverage
 htmlcov/
 .pytest_cache/
+playwright-report/
+test-results/
+.playwright-mcp/
 
 # Supabase
 api/supabase/.branches/
 api/supabase/.temp/
+web/supabase/
