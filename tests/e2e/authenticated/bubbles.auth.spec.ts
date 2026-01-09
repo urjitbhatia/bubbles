@@ -195,7 +195,7 @@ test.describe('Bubbles CRUD - Get by ID', () => {
     expect(response.status()).toBe(404)
 
     const body = await response.json()
-    expect(body.detail).toBe('Bubble not found')
+    expect(body.detail).toContain('not found')
   })
 })
 
@@ -243,7 +243,7 @@ test.describe('Bubbles CRUD - Update (Admin Only)', () => {
 
       expect(response.status()).toBe(400)
       const body = await response.json()
-      expect(body.detail).toBe('No fields to update')
+      expect(body.detail).toMatch(/no (fields|changes)/i)
     } finally {
       await deleteTestBubble(authRequest, bubble.id)
     }

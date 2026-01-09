@@ -7,6 +7,7 @@
 -- ============================================================================
 
 -- Create test users in auth.users
+-- Note: All varchar columns must be non-NULL for newer Supabase auth (GoTrue v2.184+)
 INSERT INTO auth.users (
     id,
     instance_id,
@@ -17,7 +18,15 @@ INSERT INTO auth.users (
     created_at,
     updated_at,
     aud,
-    role
+    role,
+    confirmation_token,
+    recovery_token,
+    email_change_token_new,
+    email_change_token_current,
+    email_change,
+    phone_change,
+    phone_change_token,
+    reauthentication_token
 ) VALUES
     (
         '10000000-0000-0000-0000-000000000001',
@@ -29,7 +38,15 @@ INSERT INTO auth.users (
         NOW() - INTERVAL '30 days',
         NOW(),
         'authenticated',
-        'authenticated'
+        'authenticated',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
     ),
     (
         '10000000-0000-0000-0000-000000000002',
@@ -41,7 +58,15 @@ INSERT INTO auth.users (
         NOW() - INTERVAL '25 days',
         NOW(),
         'authenticated',
-        'authenticated'
+        'authenticated',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
     ),
     (
         '10000000-0000-0000-0000-000000000003',
@@ -53,7 +78,15 @@ INSERT INTO auth.users (
         NOW() - INTERVAL '20 days',
         NOW(),
         'authenticated',
-        'authenticated'
+        'authenticated',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
     )
 ON CONFLICT (id) DO NOTHING;
 

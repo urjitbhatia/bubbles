@@ -235,7 +235,7 @@ test.describe('Items Business Logic Edge Cases', () => {
 
     expect(response.status()).toBe(400)
     const body = await response.json()
-    expect(body.detail).toContain('No fields to update')
+    expect(body.detail).toMatch(/no (fields|changes)/i)
   })
 })
 

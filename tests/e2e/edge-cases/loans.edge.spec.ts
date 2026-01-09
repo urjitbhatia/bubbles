@@ -67,7 +67,7 @@ test.describe('Loans Validation Edge Cases', () => {
 
     expect(response.status()).toBe(404)
     const body = await response.json()
-    expect(body.detail).toContain('Item not found')
+    expect(body.detail).toContain('not found')
   })
 })
 

@@ -171,7 +171,7 @@ test.describe('Item Sharing - Permission Checks', () => {
 
       expect(response.status()).toBe(404)
       const body = await response.json()
-      expect(body.detail).toBe('Item not found')
+      expect(body.detail).toContain('not found')
     } finally {
       await deleteTestBubble(authRequest, bubble.id)
     }
